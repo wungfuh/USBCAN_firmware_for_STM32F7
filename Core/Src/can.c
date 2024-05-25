@@ -26,9 +26,8 @@
 #include "master.h"
 #include "utils.h"
 
-uint32_t arr[250], count;
 /* USER CODE END 0 */
-
+uint32_t arr[250], count;
 CAN_HandleTypeDef hcan1;
 CAN_HandleTypeDef hcan2;
 CAN_HandleTypeDef hcan3;
@@ -460,19 +459,10 @@ void CAN3_Config_Filters(void) {
  */
 HAL_StatusTypeDef CANTransmit(CAN_TypeDef *device_id, uint8_t buffer[], CAN_TxHeaderTypeDef   tx_header)
 {
-	//CAN_TxHeaderTypeDef   tx_header;
 	uint32_t              tx_mailbox;
 	uint8_t 			    transmit_status;
 
 	transmit_status = HAL_ERROR;
-
-	//Configure message header
-	//tx_header.StdId = can_msg_id;
-	//tx_header.IDE = CAN_ID_STD;
-	//tx_header.RTR = CAN_RTR_DATA;
-	//tx_header.DLC = buffer_size;
-	//tx_header.TransmitGlobalTime = DISABLE;
-	uint8_t buf[5] = {'H', 'E', 'L', 'L', 'O'};
 
 	if (device_id == CAN1)
 	{
@@ -480,31 +470,15 @@ HAL_StatusTypeDef CANTransmit(CAN_TypeDef *device_id, uint8_t buffer[], CAN_TxHe
 
 			if (transmit_status != HAL_OK)
 			{
-			  //HAL_GPIO_TogglePin(RGB_R_3_GPIO_Port, RGB_R_3_Pin);
 				//Error Handler
-				HAL_GPIO_TogglePin(CAN1_RECEIVE_LED_PORT, CAN1_RECEIVE_LED_PIN);
 			}
-			else
-			{
-			  //HAL_GPIO_TogglePin(RGB_G_3_GPIO_Port, RGB_G_3_Pin);
-				//vcp_send(buf, 8);
-				HAL_GPIO_TogglePin(CAN1_RECEIVE_LED_PORT, CAN1_RECEIVE_LED_PIN);
-			}
-		//while(HAL_CAN_IsTxMessagePending(&hcan1, tx_mailbox));
-
-
 	}
 	else if (device_id == CAN2)
 	{
 		transmit_status = HAL_CAN_AddTxMessage(&hcan2, &tx_header, buffer, &tx_mailbox);
 		if (transmit_status != HAL_OK)
 		{
-		  //HAL_GPIO_TogglePin(RGB_R_3_GPIO_Port, RGB_R_3_Pin);
 			//Error Handler
-		}
-		else
-		{
-		  //HAL_GPIO_TogglePin(RGB_G_3_GPIO_Port, RGB_G_3_Pin);
 		}
 	}
 	else if (device_id == CAN3)
@@ -514,9 +488,7 @@ HAL_StatusTypeDef CANTransmit(CAN_TypeDef *device_id, uint8_t buffer[], CAN_TxHe
 		{
 			//Error Handler
 		}
-		else
-		{
-		}
+
 	}
 
 	//handleCANMessage(can_msg_id, buffer, device_id);
@@ -537,67 +509,63 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
 	uint8_t  rx_data[8];
 	uint8_t Frame[30];
 	uint8_t FrameLength;
-	CAN_TxHeaderTypeDef tx_header;
-	HAL_GPIO_TogglePin(CAN2_RECEIVE_LED_PORT, CAN2_RECEIVE_LED_PIN);
+
 	//Receive message. NB! This function must be called here, otherwise interrupt flags won't be cleared.
 	if (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &rx_header, rx_data) != HAL_OK)
 	{
-		 //Reception Error
-		__HAL_CAN_ENABLE_IT(hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
-		HAL_GPIO_TogglePin(CAN3_RECEIVE_LED_PORT, CAN3_RECEIVE_LED_PIN);
+		 //Reception Error;
 	}
 
-	tx_header.DLC = rx_header.DLC;
-	rx_header.StdId = rx_header.StdId;
-	//__HAL_CAN_DISABLE_IT(hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
 
 	if (hcan->Instance == CAN1) {
 		blinkLED(LED_CAN1_RECEIVE);
-		buildCanFrame(rx_data, rx_header, Frame, &FrameLength);
-		vcp_send (Frame, FrameLength); //sample data to store in the fifo to send to the USB when this intterrupt is triggereed
-		CANTransmit(CAN1, rx_data, tx_header);
+		//buildCanFrameToUSB(rx_data, rx_header, Frame, &FrameLength);
+		//vcp_send (Frame, FrameLength); //sample data to store in the fifo to send to the USB when this intterrupt is triggereed
 
 	} else if (hcan->Instance == CAN2) {
 		blinkLED(LED_CAN2_RECEIVE);
-		//vcp_send (buf2, 8);
+
 	} else if (hcan->Instance == CAN3) {
 		blinkLED(LED_CAN3_RECEIVE);
-		//vcp_send (buf3, 8);
 	}
-	//buildCanFrame(rx_data, rx_header.IDE, rx_header.DLC);
-
-	//handleCANMessage(tx_header, rx_header, rx_data, hcan->Instance);
+	// this can be handle in a task in RTOS is used
+	handleCANMessage(rx_header, rx_data, hcan->Instance);
 
 }
 
-void handleCANMessage(CAN_TxHeaderTypeDef tx_header, CAN_RxHeaderTypeDef  rx_header, uint8_t rx_data[], CAN_TypeDef *hcan)
+void handleCANMessage(CAN_RxHeaderTypeDef  rx_header, uint8_t rx_data[], CAN_TypeDef *hcan)
 {
 	int decision;
-	int len;
-	len = vcp_send (rx_data, 8);
 	uint8_t Frame[30];
 	uint8_t FrameLength;
 	uint32_t can_msg_id;
-	if (tx_header.IDE == CAN_ID_STD)
+	CAN_TxHeaderTypeDef tx_header;
+	if (rx_header.IDE == CAN_ID_STD)
 	{
-		can_msg_id = tx_header.StdId;
+		can_msg_id = rx_header.StdId;
+		tx_header.IDE = CAN_ID_STD;
+		tx_header.StdId = rx_header.StdId;
 	}
 	{
-		can_msg_id = tx_header.ExtId;
+		can_msg_id = rx_header.ExtId;
+		tx_header.IDE = CAN_ID_EXT;
+		tx_header.StdId = rx_header.ExtId;
 	}
+	tx_header.DLC = rx_header.DLC;
 
 	if (hcan == CAN1)
 	{
-		CANTransmit(CAN2, &rx_data[0], tx_header);
-		CANTransmit(CAN3, &rx_data[0], tx_header);
+		//CANTransmit(CAN2, rx_data, tx_header);
+		//CANTransmit(CAN3, rx_data, tx_header); //usb will replaces CAN3 for filtering
 		//store in buffer for usb transmission
-		buildCanFrame(rx_data, rx_header, Frame, &FrameLength);
-		vcp_send ( rx_data, FrameLength);
+		buildCanFrameToUSB(rx_data, rx_header, Frame, &FrameLength);
+		vcp_send (Frame, FrameLength);
 	}
 	else if (hcan == CAN2)
 	{
 		for (int i = 0; i < count; i++)
 		{
+			//array arr now populated in main that handles the USB reception
 			if (arr[i] == can_msg_id)
 			{
 				decision = 1;
@@ -610,17 +578,17 @@ void handleCANMessage(CAN_TxHeaderTypeDef tx_header, CAN_RxHeaderTypeDef  rx_hea
 		}
 		if(!decision)
 		{
-			CANTransmit(CAN2, &rx_data[0], tx_header);
-			buildCanFrame(rx_data, rx_header, Frame, &FrameLength);
-			vcp_send (rx_data, FrameLength);
+			CANTransmit(CAN2, rx_data, tx_header);
+			buildCanFrameToUSB(rx_data, rx_header, Frame, &FrameLength);
+			vcp_send (Frame, FrameLength);
 		}
-	} // when data comes from the USB store it in this array
-	else if (hcan == CAN3)
+	} // when data comes from the USB store it in this array, now data will come through the USB
+/*	else if (hcan == CAN3)
 	{
 		arr[count] = can_msg_id;
 		count++;
 
-	}
+	}*/
 
 }
 

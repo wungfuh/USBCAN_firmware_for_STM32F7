@@ -107,7 +107,7 @@ void buildCanFrameUSB(uint8_t* Frame, uint8_t data[],  CAN_TxHeaderTypeDef*  tx_
 
 
 
-void buildCanFrame(uint8_t data[], CAN_RxHeaderTypeDef  rx_header, uint8_t* Frame, uint8_t* FrameLength )
+void buildCanFrameToUSB(uint8_t data[], CAN_RxHeaderTypeDef  rx_header, uint8_t* Frame, uint8_t* FrameLength )
 {
 	uint8_t idx = 0;
 	uint32_t can_msg_id;
@@ -129,6 +129,7 @@ void buildCanFrame(uint8_t data[], CAN_RxHeaderTypeDef  rx_header, uint8_t* Fram
 		if (can_msg_id >> 28)
 		{
 			Frame[idx += 1] = (((can_msg_id >> 28) & 0xFF) < 0xA) ? (can_msg_id >> 28) + '0' : (can_msg_id >> 28) + 'A' - 10;
+			first++;
 
 		}
 		else if( first != 0)

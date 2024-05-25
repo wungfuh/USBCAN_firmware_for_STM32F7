@@ -123,18 +123,11 @@ uint8_t len;
 	    	  {
 	    		  buildCanFrameUSB(buf, data, &tx_header);
 	    		  CANTransmit(CAN1, data, tx_header);
-	    		  //buildCanFrame(rx_data, rx_header, Frame, &FrameLength);
-	    		  vcp_send (data, 8);
+	    		  arr[count] = tx_header.StdId;
+	    		  count++;
 	    	  }
 	      }
 
-	      //vcp_send (buf, 8);
-	  //CANTransmit(CAN1, CAN_ID_CELLINFO1, buf, 5);
-	  //HAL_Delay(2000);
-	  //CAN_PRESCALER = 5;
-    /* USER CODE BEGIN 3 */
-	  //len = vcp_recv (buf, 25);  // Read up to 1000 bytes
-	  //vcp_send (buf, len);
   /* USER CODE END 3 */
 
   }

@@ -422,8 +422,6 @@ int vcp_recv (uint8_t* buf, uint16_t len)
 {
 
   // Compute how much data is in the FIFO
-	if(vcp_rx_fifo.data[0] != 0)
-		HAL_GPIO_TogglePin(CAN1_RECEIVE_LED_PORT, CAN1_RECEIVE_LED_PIN);
   int cap = vcp_rx_fifo.wr - vcp_rx_fifo.rd;
   if (cap == 0)
     return 0;      // Empty FIFO, no data to read

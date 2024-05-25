@@ -1,0 +1,12 @@
+../Core/Src/can.c:39:6:MX_CAN1_Init	8	static
+../Core/Src/can.c:71:6:MX_CAN2_Init	8	static
+../Core/Src/can.c:103:6:MX_CAN3_Init	8	static
+../Core/Src/can.c:138:6:HAL_CAN_MspInit	80	static
+../Core/Src/can.c:257:6:HAL_CAN_MspDeInit	16	static
+../Core/Src/can.c:352:6:CAN1_Config_Filters	48	static
+../Core/Src/can.c:387:6:CAN2_Config_Filters	48	static
+../Core/Src/can.c:423:6:CAN3_Config_Filters	48	static
+../Core/Src/can.c:460:19:CANTransmit	24	static
+../Core/Src/can.c:507:6:HAL_CAN_RxFifo0MsgPendingCallback	120	static
+../Core/Src/can.c:536:6:handleCANMessage	112	static
+../Core/Src/can.c:595:6:AddCANTxMessageToUDPPacket	4	static

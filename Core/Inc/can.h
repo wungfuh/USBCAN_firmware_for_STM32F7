@@ -58,7 +58,7 @@ HAL_StatusTypeDef CANReceive(CAN_HandleTypeDef *hcan);
 void CAN1_Config_Filters(void);
 void CAN2_Config_Filters(void);
 void CAN3_Config_Filters(void);
-void handleCANMessage(CAN_TxHeaderTypeDef tx_header, CAN_RxHeaderTypeDef  rx_header, uint8_t rx_data[], CAN_TypeDef *hcan);
+void handleCANMessage(CAN_RxHeaderTypeDef  rx_header, uint8_t rx_data[], CAN_TypeDef *hcan);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

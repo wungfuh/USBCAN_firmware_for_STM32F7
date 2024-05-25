@@ -77,7 +77,7 @@ void Error_Handler(void);
 #define RGB_B_3_GPIO_Port GPIOC
 /* USER CODE BEGIN Private defines */
 
-
+extern uint32_t arr[250], count;
 
 
 /* USER CODE END Private defines */

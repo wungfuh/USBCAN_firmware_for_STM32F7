@@ -61,7 +61,7 @@
 
 /* USER CODE BEGIN Prototypes */
 
-void buildCanFrame(uint8_t data[], CAN_RxHeaderTypeDef  rx_header, uint8_t* Frame, uint8_t* FrameLength );
+void buildCanFrameToUSB(uint8_t data[], CAN_RxHeaderTypeDef  rx_header, uint8_t* Frame, uint8_t* FrameLength );
 void buildCanFrameUSB(uint8_t* Frame, uint8_t* data,  CAN_TxHeaderTypeDef* tx_header);
 void allLEDsOff(void);
 void blinkLED(uint8_t blink_case);
