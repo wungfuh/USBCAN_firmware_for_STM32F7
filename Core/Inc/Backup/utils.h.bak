@@ -1,0 +1,69 @@
+/**
+  ******************************************************************************
+  * File Name          : utils.h
+  * Description        : This file contains all the functions prototypes for 
+  *                      the utils.h
+  ******************************************************************************
+*/
+
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __UTILS_H
+#define __UTILS_H
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
+/* Includes ------------------------------------------------------------------*/
+#include "stm32f7xx_hal.h"
+#include "main.h"
+//#include "arch.h"
+
+/* USER CODE BEGIN Includes */
+
+/* USER CODE END Includes */
+
+/* USER CODE BEGIN Private defines */
+#define CONVERT_LITTLE_ENDIAN 	0
+#define CONVERT_BIG_ENDIAN 		1
+
+
+#define LED_CAN1_RECEIVE 	0
+#define LED_CAN2_RECEIVE 	1
+#define LED_CAN3_RECEIVE 	2
+#define LED_UDP_RECEIVE		3
+
+#define LED_CAN1_RECEIVE_PERIOD_MS	100
+#define LED_CAN2_RECEIVE_PERIOD_MS	100
+#define LED_CAN3_RECEIVE_PERIOD_MS	100
+#define LED_UDP_RECEIVE_PERIOD_MS	100
+
+#define CAN1_RECEIVE_LED_PORT  	RGB_B_2_GPIO_Port
+#define CAN1_RECEIVE_LED_PIN	RGB_B_2_Pin
+#define CAN2_RECEIVE_LED_PORT  	RGB_B_1_GPIO_Port
+#define CAN2_RECEIVE_LED_PIN	RGB_B_1_Pin
+#define CAN3_RECEIVE_LED_PORT  	RGB_B_3_GPIO_Port
+#define CAN3_RECEIVE_LED_PIN	RGB_B_3_Pin
+#define UDP_RECEIVE_LED_PORT	RGB_G_3_GPIO_Port
+#define UDP_RECEIVE_LED_PIN		RGB_G_3_Pin
+/* USER CODE END Private defines */
+
+/* USER CODE BEGIN Prototypes */
+void allLEDsOff(void);
+void blinkLED(uint8_t blink_case);
+void char2float(char value[], float *p_result, uint8_t endian);
+/* USER CODE END Prototypes */
+
+#ifdef __cplusplus
+}
+#endif
+#endif /*__ UTILS_H */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/****END OF FILE****/
